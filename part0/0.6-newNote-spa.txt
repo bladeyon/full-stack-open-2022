@@ -1,0 +1,14 @@
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: Status code: 201; {"message":"note created"}
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+
+After a successful submission, the list of notes is not re-fetched, so there is no need to re-render
+end note
