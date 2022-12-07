@@ -12,6 +12,7 @@ const App = () => {
   ];
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(new Array(anecdotes.length).fill(0));
+  const [maxVoteIdx, setMaxVoteIdx] = useState(0);
 
   const handleNext = () => {
     let next = 0;
@@ -25,15 +26,40 @@ const App = () => {
     const newPoints = [...points];
     newPoints[selected] += 1;
     setPoints(newPoints);
+
+    newPoints.reduce((pre, cur, curIdx) => {
+      if (cur > pre) {
+        pre = cur;
+        setMaxVoteIdx(curIdx);
+      }
+      return pre;
+    }, 0);
   };
+
   return (
     <div>
+      <h2>Anecdote of the day</h2>
+      <Display text={anecdotes[selected]} vote={points[selected]}></Display>
       <div>
-        <button onClick={handleVote}>vote</button>
-        <button onClick={handleNext}>next anecdote</button>
+        <Button onClick={handleVote} text="vote"></Button>
+        <Button onClick={handleNext} text="next anecdote"></Button>
       </div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {points[selected]} vote</p>
+      <h2>Anecdote with most votes</h2>
+      <Display text={anecdotes[maxVoteIdx]} vote={points[maxVoteIdx]}></Display>
+    </div>
+  );
+};
+
+const Button = (props) => {
+  const { onClick, text } = props;
+  return <button onClick={onClick}>{text}</button>;
+};
+
+const Display = ({ text, vote }) => {
+  return (
+    <div>
+      <p>{text}</p>
+      <p>has {vote} votes</p>
     </div>
   );
 };
