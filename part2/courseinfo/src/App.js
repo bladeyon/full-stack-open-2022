@@ -6,10 +6,12 @@ const Part = ({ part }) => (
   </p>
 );
 
-const Total = ({ sum }) => <h4>total of {sum} exercises </h4>;
+const Total = ({ parts }) => {
+  let sum = parts.reduce((sum, part) => (sum += part.exercises), 0);
+  return <h4>total of {sum} exercises </h4>;
+};
 
 const Content = ({ parts }) => {
-  console.log("Content");
   return (
     <div>
       {parts.map((part) => (
@@ -20,22 +22,16 @@ const Content = ({ parts }) => {
 };
 
 const Course = ({ course }) => {
-  console.log("Course");
-  let sum = 0;
-  course.parts.forEach((part) => {
-    sum += part.exercises;
-  });
   return (
     <>
       <Header course={course.name} />
       <Content parts={course.parts} />
-      <Total sum={sum} />
+      <Total parts={course.parts} />
     </>
   );
 };
 
 const App = () => {
-  console.log("App");
   const courses = [
     {
       id: 1,
