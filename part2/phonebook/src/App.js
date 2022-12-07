@@ -7,7 +7,12 @@ const App = () => {
   const handleSave = (e) => {
     e.preventDefault();
 
-    setPersons(persons.concat({ name: newName }));
+    let isNameExist = persons.some((p) => p.name === newName);
+    if (isNameExist) {
+      alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons(persons.concat({ name: newName }));
+    }
     setNewName("");
   };
 
