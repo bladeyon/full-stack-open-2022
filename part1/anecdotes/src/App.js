@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 const App = () => {
-  const [selected, setSelected] = useState(0);
   const anecdotes = [
     "If it hurts, do it more often",
     "Adding manpower to a late software project makes it later!",
@@ -11,6 +10,9 @@ const App = () => {
     "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
     "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients"
   ];
+  const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0));
+
   const handleNext = () => {
     let next = 0;
     if (selected + 1 < anecdotes.length) {
@@ -18,10 +20,20 @@ const App = () => {
     }
     setSelected(next);
   };
+
+  const handleVote = () => {
+    const newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
+  };
   return (
     <div>
-      <button onClick={handleNext}>next anecdote</button>
+      <div>
+        <button onClick={handleVote}>vote</button>
+        <button onClick={handleNext}>next anecdote</button>
+      </div>
       <p>{anecdotes[selected]}</p>
+      <p>has {points[selected]} vote</p>
     </div>
   );
 };
