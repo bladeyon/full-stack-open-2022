@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -19,9 +19,12 @@ const App = () => {
     if (isNameExist) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons(persons.concat({ name: newName, phone: newPhone }));
+      const newPersons = persons.concat({ name: newName, phone: newPhone });
+      setPersons(newPersons);
+      filterPersons(newPersons, query);
     }
     setNewName("");
+    setNewPhone("");
   };
 
   const handleNameChange = (e) => {
@@ -34,10 +37,14 @@ const App = () => {
   };
   const handleQueryChange = (e) => {
     let value = e.target.value;
-    console.log('query', value);
+    console.log("query", value);
     setQuery(value);
-    const newResult = persons.filter((person) =>
-      person.name.toLowerCase().includes(value.toLowerCase())
+    filterPersons(persons, value);
+  };
+
+  const filterPersons = (arr, query) => {
+    const newResult = arr.filter((person) =>
+      person.name.toLowerCase().includes(query.toLowerCase())
     );
     console.log(query, newResult);
     setResult(newResult);
@@ -46,24 +53,48 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      filter person with <input value={query} onChange={handleQueryChange} />
+      <Filter query={query} onChange={handleQueryChange} />
       <h2>Add new person</h2>
-      <form onSubmit={handleSave}>
-        name:
-        <input name="text" value={newName} onChange={handleNameChange} />
-        phone:
-        <input name="phone" value={newPhone} onChange={handlePhoneChange} />
-        <button type="submit">save</button>
-      </form>
+      <PersonForm
+        onSubmit={handleSave}
+        nameOpt={{ value: newName, onChange: handleNameChange }}
+        phoneOpt={{ value: newPhone, onChange: handlePhoneChange }}
+      />
       <h2>Numbers</h2>
-      <ul>
-        {result.map((person) => (
-          <li key={person.name}>
-            {person.name} {person.phone}
-          </li>
-        ))}
-      </ul>
+      <Persons result={result} />
     </div>
+  );
+};
+
+const Filter = ({ query, onChange }) => {
+  return (
+    <div>
+      filter person with <input value={query} onChange={onChange} />
+    </div>
+  );
+};
+
+const PersonForm = ({ onSubmit, nameOpt, phoneOpt }) => {
+  return (
+    <form onSubmit={onSubmit}>
+      name:
+      <input name="text" value={nameOpt.value} onChange={nameOpt.onChange} />
+      phone:
+      <input name="phone" value={phoneOpt.value} onChange={phoneOpt.onChange} />
+      <button type="submit">save</button>
+    </form>
+  );
+};
+
+const Persons = ({ result }) => {
+  return (
+    <ul>
+      {result.map((person) => (
+        <li key={person.name}>
+          {person.name} {person.phone}
+        </li>
+      ))}
+    </ul>
   );
 };
 
