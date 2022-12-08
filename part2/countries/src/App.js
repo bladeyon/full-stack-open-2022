@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const api_key = process.env.REACT_APP_API_KEY;
+
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [query, setQuery] = useState("");
@@ -47,7 +49,7 @@ const Filter = ({ query, onChange }) => {
 
 const Countries = ({ result }) => {
   const [selCountry, setSelCountry] = useState();
-  
+
   const showView = (country) => () => {
     setSelCountry(country);
   };
@@ -73,17 +75,53 @@ const Countries = ({ result }) => {
 };
 
 const CountryView = ({ country }) => {
+  const [weather, setWeather] = useState();
+  const [lat, lon] = country.capitalInfo.latlng;
+  // const part = "current";
+  useEffect(() => {
+    axios
+      .get(
+        // `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=${part}&appid=${api_key}`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`
+      )
+      .then((response) => {
+        const data = response.data;
+        setWeather(data);
+      });
+  }, []);
+
+  // const convertTemp = (value) => (((value - 32) * 5) / 9).toFixed(2); // 华氏度转换成摄氏度
+  const convertTemp = (value) => (value - 273.15).toFixed(2); // 开氏温度比摄氏温度大 273.15°。
+
   return (
     <div>
       <h2>{country.name.common}</h2>
-      <span>capital {country.capital[0]}</span>
+      <p>capital {country.capital[0]}</p>
+      <p>area {country.area}</p>
       <h4>languages:</h4>
       <ul>
         {Object.values(country.languages).map((l) => (
           <li>{l}</li>
         ))}
       </ul>
-      <img src={country.flags.png} alt="flag"></img>
+      <img src={country.flags.png} alt="flag" />
+      {JSON.stringify(weather) ? (
+        <div>
+          <h4>Weather in {country.capital[0]}</h4>
+          <p>
+            temperature:
+            {convertTemp(weather.main.temp)}
+            Celsius
+          </p>
+          <img
+            src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            alt="icon"
+          />
+          <p>wind {weather.wind.speed} m/s</p>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
