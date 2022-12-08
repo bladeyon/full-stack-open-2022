@@ -46,30 +46,45 @@ const Filter = ({ query, onChange }) => {
 };
 
 const Countries = ({ result }) => {
+  const [selCountry, setSelCountry] = useState();
+  
+  const showView = (country) => () => {
+    setSelCountry(country);
+  };
+
   if (result.length > 10) {
     return <p>Too many matches, specify another filter</p>;
   } else if (result.length === 1) {
     const c = result[0];
-    return (
-      <div>
-        <h2>{c.name.common}</h2>
-        <span>capital {c.capital[0]}</span>
-        <h4>languages:</h4>
-        <ul>
-          {Object.values(c.languages).map((l) => (
-            <li>{l}</li>
-          ))}
-        </ul>
-        <img src={c.flags.png} alt="flag"></img>
-      </div>
-    );
+    return <CountryView country={c} />;
   }
   return (
-    <ul>
-      {result.map((c) => (
-        <li key={c.name.official}>{c.name.common}</li>
-      ))}
-    </ul>
+    <div>
+      <ul>
+        {result.map((c) => (
+          <li key={c.name.official}>
+            {c.name.common} <button onClick={showView(c)}>show</button>
+          </li>
+        ))}
+      </ul>
+      {JSON.stringify(selCountry) ? <CountryView country={selCountry} /> : ""}
+    </div>
+  );
+};
+
+const CountryView = ({ country }) => {
+  return (
+    <div>
+      <h2>{country.name.common}</h2>
+      <span>capital {country.capital[0]}</span>
+      <h4>languages:</h4>
+      <ul>
+        {Object.values(country.languages).map((l) => (
+          <li>{l}</li>
+        ))}
+      </ul>
+      <img src={country.flags.png} alt="flag"></img>
+    </div>
   );
 };
 
