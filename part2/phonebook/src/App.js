@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { getPersonList, addPerson, delPerson } from "./services/persons";
+import {
+  getPersonList,
+  addPerson,
+  delPerson,
+  putPerson
+} from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -24,9 +29,23 @@ const App = () => {
   const handleSave = (e) => {
     e.preventDefault();
 
-    let isNameExist = persons.some((p) => p.name === newName);
-    if (isNameExist) {
-      alert(`${newName} is already added to phonebook`);
+    let existIdx = persons.findIndex((p) => p.name === newName);
+    if (existIdx !== -1) {
+      const newPerson = {
+        id: persons[existIdx].id,
+        name: newName,
+        phone: newPhone
+      };
+      const result = window.confirm(
+        `${newName} is already added to phonebook, replace the old phone with a new one?`
+      );
+      if (result) {
+        putPerson(newPerson).then((data) => {
+          const newPersons = [...JSON.parse(JSON.stringify(persons))]; // simple copy
+          newPersons.splice(existIdx, 1, newPerson); // replace
+          reload(newPersons);
+        });
+      }
     } else {
       const newPerson = { name: newName, phone: newPhone };
       addPerson(newPerson).then((data) => {

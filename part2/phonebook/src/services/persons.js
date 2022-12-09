@@ -22,3 +22,13 @@ export const delPerson = (id) => {
     .delete(`${baseUrl}/${id}`)
     .then((response) => JSON.parse(response.data));
 };
+
+export const putPerson = (person) => {
+  return http
+    .put(`${baseUrl}/${person.id}`, JSON.stringify(person), {
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      }
+    })
+    .then((response) => JSON.parse(response.data));
+};
