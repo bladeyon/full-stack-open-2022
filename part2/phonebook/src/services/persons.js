@@ -16,3 +16,9 @@ export const addPerson = (person) => {
   });
   return res.then((response) => JSON.parse(response.data));
 };
+
+export const delPerson = (id) => {
+  return http
+    .delete(`${baseUrl}/${id}`)
+    .then((response) => JSON.parse(response.data));
+};

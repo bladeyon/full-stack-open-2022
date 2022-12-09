@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPersonList, addPerson } from "./services/persons";
+import { getPersonList, addPerson, delPerson } from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,13 +10,17 @@ const App = () => {
 
   useEffect(() => {
     console.log("execute effect");
-
     const data = getPersonList();
     data.then((data) => {
-      setPersons(data);
-      filterPersons(data, query);
+      reload(data);
     });
   }, []);
+
+  const reload = (data) => {
+    setPersons(data);
+    filterPersons(data, query);
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
 
@@ -27,12 +31,21 @@ const App = () => {
       const newPerson = { name: newName, phone: newPhone };
       addPerson(newPerson).then((data) => {
         const newPersons = persons.concat(data);
-        setPersons(newPersons);
-        filterPersons(newPersons, query);
+        reload(newPersons);
       });
     }
     setNewName("");
     setNewPhone("");
+  };
+
+  const handleDelPerson = (person) => {
+    const result = window.confirm(`Delete ${person.name} ?`);
+    if (result) {
+      delPerson(person.id).then(() => {
+        const data = persons.filter((p) => p.id !== person.id);
+        reload(data);
+      });
+    }
   };
 
   const handleNameChange = (e) => {
@@ -67,7 +80,7 @@ const App = () => {
         phoneOpt={{ value: newPhone, onChange: handlePhoneChange }}
       />
       <h2>Numbers</h2>
-      <Persons result={result} />
+      <Persons result={result} delPerson={handleDelPerson} />
     </div>
   );
 };
@@ -92,12 +105,13 @@ const PersonForm = ({ onSubmit, nameOpt, phoneOpt }) => {
   );
 };
 
-const Persons = ({ result }) => {
+const Persons = ({ result, delPerson }) => {
   return (
     <ul>
       {result.map((person) => (
         <li key={person.name}>
           {person.name} {person.phone}
+          <button onClick={() => delPerson(person)}>delete</button>
         </li>
       ))}
     </ul>
