@@ -14,13 +14,21 @@ export const addPerson = (person) => {
       "Content-Type": "application/json;charset=utf-8"
     }
   });
-  return res.then((response) => JSON.parse(response.data));
+  return res.then((response) => {
+    if (response.status === 200) {
+      return JSON.parse(response.data);
+    }
+    return Promise.reject(response.statusText);
+  });
 };
 
 export const delPerson = (id) => {
-  return http
-    .delete(`${baseUrl}/${id}`)
-    .then((response) => JSON.parse(response.data));
+  return http.delete(`${baseUrl}/${id}`).then((response) => {
+    if (response.status === 200) {
+      return JSON.parse(response.data);
+    }
+    return Promise.reject(response.statusText);
+  });
 };
 
 export const putPerson = (person) => {
@@ -30,5 +38,10 @@ export const putPerson = (person) => {
         "Content-Type": "application/json;charset=utf-8"
       }
     })
-    .then((response) => JSON.parse(response.data));
+    .then((response) => {
+      if (response.status === 200) {
+        return JSON.parse(response.data);
+      }
+      return Promise.reject(response.statusText);
+    });
 };

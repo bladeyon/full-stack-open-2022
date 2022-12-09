@@ -12,14 +12,39 @@ const App = () => {
   const [newPhone, setNewPhone] = useState("");
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(persons);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [msgStyle, setMsgStyle] = useState({});
+
+  const style = {
+    success: {
+      color: "green",
+      borderColor: "green"
+    },
+    fail: {
+      color: "red",
+      borderColor: "red"
+    }
+  };
 
   useEffect(() => {
     console.log("execute effect");
+    init();
+  }, []);
+
+  const showErrNotification = (msg, type) => {
+    setErrorMsg(msg);
+    setMsgStyle(style[type]);
+    setTimeout(() => {
+      setErrorMsg("");
+    }, 3000);
+  };
+
+  const init = () => {
     const data = getPersonList();
     data.then((data) => {
       reload(data);
     });
-  }, []);
+  };
 
   const reload = (data) => {
     setPersons(data);
@@ -40,18 +65,36 @@ const App = () => {
         `${newName} is already added to phonebook, replace the old phone with a new one?`
       );
       if (result) {
-        putPerson(newPerson).then((data) => {
-          const newPersons = [...JSON.parse(JSON.stringify(persons))]; // simple copy
-          newPersons.splice(existIdx, 1, newPerson); // replace
-          reload(newPersons);
-        });
+        putPerson(newPerson)
+          .then((data) => {
+            console.log("app", data);
+            const newPersons = [...JSON.parse(JSON.stringify(persons))]; // simple copy
+            newPersons.splice(existIdx, 1, newPerson); // replace
+            reload(newPersons);
+            showErrNotification(`Modify ${newName}`, "success");
+          })
+          .catch((err) => {
+            console.log(`put err`, err);
+            showErrNotification(
+              `Information of ${newName} has been removed from server`,
+              "fail"
+            );
+            init();
+          });
       }
     } else {
       const newPerson = { name: newName, phone: newPhone };
-      addPerson(newPerson).then((data) => {
-        const newPersons = persons.concat(data);
-        reload(newPersons);
-      });
+      addPerson(newPerson)
+        .then((data) => {
+          const newPersons = persons.concat(data);
+          reload(newPersons);
+          showErrNotification(`Add ${newName}`, "success");
+        })
+        .catch((err) => {
+          console.log(`add err`, err);
+          showErrNotification(`${err}`, "fail");
+          init();
+        });
     }
     setNewName("");
     setNewPhone("");
@@ -60,10 +103,16 @@ const App = () => {
   const handleDelPerson = (person) => {
     const result = window.confirm(`Delete ${person.name} ?`);
     if (result) {
-      delPerson(person.id).then(() => {
-        const data = persons.filter((p) => p.id !== person.id);
-        reload(data);
-      });
+      delPerson(person.id)
+        .then(() => {
+          const data = persons.filter((p) => p.id !== person.id);
+          reload(data);
+        })
+        .catch((err) => {
+          console.log(`del err`, err);
+          showErrNotification(`${err}`, "fail");
+          init();
+        });
     }
   };
 
@@ -91,6 +140,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {errorMsg ? <Notification msg={errorMsg} styleOpt={msgStyle} /> : ""}
       <Filter query={query} onChange={handleQueryChange} />
       <h2>Add new person</h2>
       <PersonForm
@@ -102,6 +152,22 @@ const App = () => {
       <Persons result={result} delPerson={handleDelPerson} />
     </div>
   );
+};
+
+const Notification = ({ msg, styleOpt }) => {
+  const defStyle = {
+    color: "green",
+    backgroundColor: "lightgray",
+    fontSize: 16,
+    borderWidth: "2px",
+    borderStyle: "solid",
+    borderColor: "green",
+    borderRadius: "5px",
+    padding: "10px",
+    marginBottom: "10px"
+  };
+  const style = Object.assign({}, defStyle, styleOpt);
+  return <div style={style}>{msg}</div>;
 };
 
 const Filter = ({ query, onChange }) => {
