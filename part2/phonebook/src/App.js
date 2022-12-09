@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { getPersonList, addPerson } from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,14 +10,13 @@ const App = () => {
 
   useEffect(() => {
     console.log("execute effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log(response);
-      const data = response.data;
+
+    const data = getPersonList();
+    data.then((data) => {
       setPersons(data);
       filterPersons(data, query);
     });
   }, []);
-  console.log("persons", persons.length);
   const handleSave = (e) => {
     e.preventDefault();
 
@@ -25,9 +24,12 @@ const App = () => {
     if (isNameExist) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      const newPersons = persons.concat({ name: newName, phone: newPhone });
-      setPersons(newPersons);
-      filterPersons(newPersons, query);
+      const newPerson = { name: newName, phone: newPhone };
+      addPerson(newPerson).then((data) => {
+        const newPersons = persons.concat(data);
+        setPersons(newPersons);
+        filterPersons(newPersons, query);
+      });
     }
     setNewName("");
     setNewPhone("");
@@ -43,7 +45,6 @@ const App = () => {
   };
   const handleQueryChange = (e) => {
     let value = e.target.value;
-    console.log("query", value);
     setQuery(value);
     filterPersons(persons, value);
   };
@@ -52,7 +53,6 @@ const App = () => {
     const newResult = arr.filter((person) =>
       person.name.toLowerCase().includes(query.toLowerCase())
     );
-    console.log(query, newResult);
     setResult(newResult);
   };
 
