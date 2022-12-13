@@ -1,6 +1,7 @@
 const express = require("express");
 
 const http = express();
+http.use(express.json());
 
 let persons = [
   {
@@ -56,6 +57,15 @@ http.delete("/api/persons/:id", (request, response) => {
     response.status(404).json(`The person with id ${id} was not found`);
   }
   response.json();
+});
+
+http.post("/api/persons", (request, response) => {
+  const person = request.body;
+
+  let id = +Math.random().toString().slice(2);
+  person.id = id;
+  persons = persons.concat(person);
+  response.send(person);
 });
 
 http.listen(3001, () => {
