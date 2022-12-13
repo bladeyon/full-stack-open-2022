@@ -56,11 +56,25 @@ http.delete("/api/persons/:id", (request, response) => {
   } else {
     response.status(404).json(`The person with id ${id} was not found`);
   }
-  response.json();
+  response.end();
 });
 
 http.post("/api/persons", (request, response) => {
   const person = request.body;
+
+  if (!(person.name && person.number)) {
+    response.statusMessage = "name or number missing";
+    response.status(400).end();
+    return;
+  }
+
+  // check repeat
+  const idx = persons.findIndex((p) => p.name === person.name);
+  if (idx > -1) {
+    response.statusMessage = "name already exists";
+    response.status(400).end();
+    return;
+  }
 
   let id = +Math.random().toString().slice(2);
   person.id = id;
