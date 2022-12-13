@@ -29,6 +29,14 @@ http.get("/api/persons", (request, response) => {
   response.send(persons);
 });
 
+http.get("/info", (request, response) => {
+  response.setHeader("Content-Type", "text/html");
+  response.send(`
+  <p>Phonebook has info for ${persons.length} people</p>
+  <p>${new Date()}</P>
+  `);
+});
+
 http.listen(3001, () => {
   console.log(`Server running on port 3001`);
 });
