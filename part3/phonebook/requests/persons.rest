@@ -2,12 +2,15 @@
 
 ###
 GET http://localhost:3001/api/persons HTTP/1.1
+Authorization: jikafgew0234
 
 ###
 DELETE http://localhost:3001/api/persons/3 HTTP/1.1
+Authorization: jikafgew0234
 
 ###
 POST {{url}} HTTP/1.1
+Authorization: jikafgew0234
 Content-Type: application/json
 
 {

@@ -4,7 +4,30 @@ const morgan = require("morgan");
 const http = express();
 
 http.use(express.json());
-http.use(morgan("tiny"));
+
+// http.use(morgan("tiny"));
+morgan.token("type", (req, res) => req.headers["authorization"]);
+
+http.use(morgan(":type"));
+
+http.use(
+  morgan((tokens, req, res) => {
+    const method = tokens.method(req, res);
+    const logs = [
+      method,
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms"
+    ];
+    if (method === "POST") {
+      logs.push(JSON.stringify(req.body));
+    }
+    return logs.join(" ");
+  })
+);
 
 let persons = [
   {
@@ -63,7 +86,7 @@ http.delete("/api/persons/:id", (request, response) => {
 });
 
 http.post("/api/persons", (request, response) => {
-  const person = request.body;
+  const person = { ...request.body };
 
   if (!(person.name && person.number)) {
     response.statusMessage = "name or number missing";
