@@ -59,7 +59,7 @@ const App = () => {
       const newPerson = {
         id: persons[existIdx].id,
         name: newName,
-        phone: newPhone
+        number: newPhone
       };
       const result = window.confirm(
         `${newName} is already added to phonebook, replace the old phone with a new one?`
@@ -83,7 +83,7 @@ const App = () => {
           });
       }
     } else {
-      const newPerson = { name: newName, phone: newPhone };
+      const newPerson = { name: newName, number: newPhone };
       addPerson(newPerson)
         .then((data) => {
           const newPersons = persons.concat(data);

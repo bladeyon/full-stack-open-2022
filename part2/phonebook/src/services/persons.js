@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = new axios.Axios({});
-const baseUrl = "http://localhost:3001/persons";
+const baseUrl = "http://localhost:3001/api/persons";
 
 export const getPersonList = () => {
   const res = http.get(baseUrl);

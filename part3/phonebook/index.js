@@ -1,8 +1,10 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const http = express();
 
+http.use(cors());
 http.use(express.json());
 
 // http.use(morgan("tiny"));
