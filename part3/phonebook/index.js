@@ -1,7 +1,10 @@
 const express = require("express");
+const morgan = require("morgan");
 
 const http = express();
+
 http.use(express.json());
+http.use(morgan("tiny"));
 
 let persons = [
   {
