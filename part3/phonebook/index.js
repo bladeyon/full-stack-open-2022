@@ -1,12 +1,14 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const Person = require("./modules/person");
 
 const http = express();
 
 http.use(cors());
 http.use(express.json());
-http.use(express.static('build'))
+http.use(express.static("build"));
 
 // http.use(morgan("tiny"));
 morgan.token("type", (req, res) => req.headers["authorization"]);
@@ -56,7 +58,9 @@ let persons = [
 ];
 
 http.get("/api/persons", (request, response) => {
-  response.send(persons);
+  Person.find({}).then((result) => {
+    response.send(result);
+  });
 });
 
 http.get("/info", (request, response) => {
@@ -98,20 +102,22 @@ http.post("/api/persons", (request, response) => {
   }
 
   // check repeat
-  const idx = persons.findIndex((p) => p.name === person.name);
-  if (idx > -1) {
-    response.statusMessage = "name already exists";
-    response.status(400).end();
-    return;
-  }
+  Person.find({ name: person.name }).then((res) => {
+    if (res.length) {
+      response.statusMessage = "name already exists";
+      response.status(400).end();
+      return;
+    }
 
-  let id = +Math.random().toString().slice(2);
-  person.id = id;
-  persons = persons.concat(person);
-  response.send(person);
+    const newPerson = new Person(person);
+    newPerson.save().then((res) => {
+      console.log(`added ${person.name} ${person.number} to phonebook`);
+      response.send(person);
+    });
+  });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 http.listen(PORT, () => {
   console.log(`Server running on port 3001`);
 });
