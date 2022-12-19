@@ -128,22 +128,25 @@ http.post("/api/persons", (request, response, next) => {
   });
 });
 
-http.put("/api/persons/:id", (request, response) => {
+http.put("/api/persons/:id", (request, response, next) => {
   const person = { ...request.body };
   const id = request.params.id;
 
-  if (!(person.name && person.number)) {
-    response.statusMessage = "name or number missing";
-    response.status(400).end();
-    return;
-  }
+  // if (!(person.name && person.number)) {
+  //   response.statusMessage = "name or number missing";
+  //   response.status(400).end();
+  //   return;
+  // }
 
   Person.findByIdAndUpdate(id, person, {
-    new: true // 默认为false, 返回更新前的对象；设为true,返回更新后的person
-  }).then((res) => {
-    console.log(`modify ${res.name} ${res.number} to phonebook`);
-    response.send(res);
-  });
+    new: true, // 默认为false, 返回更新前的对象；设为true,返回更新后的person
+    runValidators: true
+  })
+    .then((res) => {
+      console.log(`modify ${res.name} ${res.number} to phonebook`);
+      response.send(res);
+    })
+    .catch((error) => next(error));
 });
 
 // error handling
