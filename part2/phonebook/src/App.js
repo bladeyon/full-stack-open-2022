@@ -195,7 +195,7 @@ const Persons = ({ result, delPerson }) => {
     <ul>
       {result.map((person) => (
         <li key={person.name}>
-          {person.name} {person.phone}
+          {person.name} {person.number}
           <button onClick={() => delPerson(person)}>delete</button>
         </li>
       ))}
