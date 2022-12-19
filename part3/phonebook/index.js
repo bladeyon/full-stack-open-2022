@@ -82,14 +82,14 @@ http.get("/api/persons/:id", (request, response) => {
 });
 
 http.delete("/api/persons/:id", (request, response) => {
-  const id = +request.params.id;
-  const delIdx = persons.findIndex((p) => p.id === id);
-  if (delIdx > -1) {
-    persons.splice(delIdx, 1);
-  } else {
+  const id = request.params.id;
+  Person.findByIdAndRemove(id)
+    .then((res) => {
+      response.status(204).end();
+    })
+    .catch((error) => {
     response.status(404).json(`The person with id ${id} was not found`);
-  }
-  response.end();
+    });
 });
 
 http.post("/api/persons", (request, response) => {
@@ -119,5 +119,5 @@ http.post("/api/persons", (request, response) => {
 
 const PORT = process.env.PORT;
 http.listen(PORT, () => {
-  console.log(`Server running on port 3001`);
+  console.log(`Server running on port ${PORT}`);
 });
