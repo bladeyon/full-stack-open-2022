@@ -7,14 +7,12 @@ const Person = require("./modules/person");
 const http = express();
 
 http.use(cors());
-http.use(express.json());
 http.use(express.static("build"));
+http.use(express.json());
 
 // http.use(morgan("tiny"));
 morgan.token("type", (req, res) => req.headers["authorization"]);
-
 http.use(morgan(":type"));
-
 http.use(
   morgan((tokens, req, res) => {
     const method = tokens.method(req, res);
@@ -71,24 +69,30 @@ http.get("/info", (request, response) => {
   `);
 });
 
-http.get("/api/persons/:id", (request, response) => {
-  const id = +request.params.id;
-  const person = persons.find((p) => p.id === id);
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).json(`The person with id ${id} was not found`);
-  }
+http.get("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  Person.findById(id)
+    .then((person) => {
+      console.log(person);
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end(`The person with id ${id} was not found`);
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
-http.delete("/api/persons/:id", (request, response) => {
+http.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   Person.findByIdAndRemove(id)
     .then((res) => {
       response.status(204).end();
     })
     .catch((error) => {
-    response.status(404).json(`The person with id ${id} was not found`);
+      next(error);
     });
 });
 
@@ -116,6 +120,16 @@ http.post("/api/persons", (request, response) => {
     });
   });
 });
+
+// error handling
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+  next(error);
+};
+http.use(errorHandler); // 错误处理放在所有中间件的最后
 
 const PORT = process.env.PORT;
 http.listen(PORT, () => {
