@@ -15,19 +15,21 @@ export const addPerson = (person) => {
     }
   });
   return res.then((response) => {
+    const data = JSON.parse(response.data);
     if (response.status === 200) {
-      return JSON.parse(response.data);
+      return data;
     }
-    return Promise.reject(response.statusText);
+    return Promise.reject(data);
   });
 };
 
 export const delPerson = (id) => {
   return http.delete(`${baseUrl}/${id}`).then((response) => {
+    const data = JSON.parse(response.data);
     if (response.status === 200) {
-      return JSON.parse(response.data);
+      return data;
     }
-    return Promise.reject(response.statusText);
+    return Promise.reject(data);
   });
 };
 
@@ -39,9 +41,10 @@ export const putPerson = (person) => {
       }
     })
     .then((response) => {
+      const data = JSON.parse(response.data);
       if (response.status === 200) {
-        return JSON.parse(response.data);
+        return data;
       }
-      return Promise.reject(response.statusText);
+      return Promise.reject(data);
     });
 };

@@ -75,10 +75,7 @@ const App = () => {
           })
           .catch((err) => {
             console.log(`put err`, err);
-            showErrNotification(
-              `Information of ${newName} has been removed from server`,
-              "fail"
-            );
+            showErrNotification(`${err.error}`, "fail");
             init();
           });
       }
@@ -92,7 +89,7 @@ const App = () => {
         })
         .catch((err) => {
           console.log(`add err`, err);
-          showErrNotification(`${err}`, "fail");
+          showErrNotification(`${err.error}`, "fail");
           init();
         });
     }
@@ -110,7 +107,7 @@ const App = () => {
         })
         .catch((err) => {
           console.log(`del err`, err);
-          showErrNotification(`${err}`, "fail");
+          showErrNotification(`${err.error}`, "fail");
           init();
         });
     }
