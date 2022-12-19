@@ -63,10 +63,12 @@ http.get("/api/persons", (request, response) => {
 
 http.get("/info", (request, response) => {
   response.setHeader("Content-Type", "text/html");
-  response.send(`
-  <p>Phonebook has info for ${persons.length} people</p>
+  Person.count().then((count) => {
+    response.send(`
+  <p>Phonebook has info for ${count} people</p>
   <p>${new Date()}</P>
   `);
+  });
 });
 
 http.get("/api/persons/:id", (request, response, next) => {
@@ -118,6 +120,22 @@ http.post("/api/persons", (request, response) => {
       console.log(`added ${person.name} ${person.number} to phonebook`);
       response.send(person);
     });
+  });
+});
+
+http.put("/api/persons/:id", (request, response) => {
+  const person = { ...request.body };
+  const id = request.params.id;
+
+  if (!(person.name && person.number)) {
+    response.statusMessage = "name or number missing";
+    response.status(400).end();
+    return;
+  }
+
+  Person.findByIdAndUpdate(id, person).then((res) => {
+    console.log(`modify ${person.name} ${person.number} to phonebook`);
+    response.send(person);
   });
 });
 
