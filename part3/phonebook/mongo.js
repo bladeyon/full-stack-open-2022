@@ -36,7 +36,7 @@ if (name && number) {
   });
 } else {
   Phonebook.find({}).then((res) => {
-    console.log('phonebook:');
+    console.log("phonebook:");
     res.forEach((item) => {
       console.log(item.name, item.number);
     });

@@ -21,8 +21,9 @@ Authorization: jikafgew0234
 Content-Type: application/json
 
 {
-  "name": "Jim",
-  "number": "010-123456"
+  "name": "m1q",
+  "number": "010-123456",
+  "age": 23
 }
 
 ###
@@ -31,5 +32,5 @@ Content-Type: application/json
 
 {
   "name": "dd",
-  "number": "010-123456"
+  "number": "010-1234567"
 }

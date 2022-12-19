@@ -11,7 +11,7 @@ http.use(express.static("build"));
 http.use(express.json());
 
 // http.use(morgan("tiny"));
-morgan.token("type", (req, res) => req.headers["authorization"]);
+morgan.token("type", (req) => req.headers["authorization"]);
 http.use(morgan(":type"));
 http.use(
   morgan((tokens, req, res) => {
@@ -31,29 +31,6 @@ http.use(
     return logs.join(" ");
   })
 );
-
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456"
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523"
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345"
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122"
-  }
-];
 
 http.get("/api/persons", (request, response) => {
   Person.find({}).then((result) => {
@@ -90,7 +67,7 @@ http.get("/api/persons/:id", (request, response, next) => {
 http.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   Person.findByIdAndRemove(id)
-    .then((res) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => {
@@ -119,8 +96,11 @@ http.post("/api/persons", (request, response, next) => {
     newPerson
       .save()
       .then((res) => {
-        console.log(`added ${newPerson.name} ${newPerson.number} to phonebook`);
-        response.send(newPerson);
+        console.log(
+          res,
+          `added ${res.name} ${res.number} to phonebook`
+        );
+        response.send(res);
       })
       .catch((error) => {
         next(error);
