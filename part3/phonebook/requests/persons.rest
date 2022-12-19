@@ -1,11 +1,18 @@
 @url= http://localhost:3001/api/persons
 
+
+###
+GET http://localhost:3001/info HTTP/1.1
+
+###
+GET {{url}}/639c3ce0acfe0203d4c0435c HTTP/1.1
+
 ###
 GET http://localhost:3001/api/persons HTTP/1.1
 Authorization: jikafgew0234
 
 ###
-DELETE http://localhost:3001/api/persons/3 HTTP/1.1
+DELETE {{url}}/639c40168f539874f2bb2098 HTTP/1.1
 Authorization: jikafgew0234
 
 ###
@@ -15,5 +22,14 @@ Content-Type: application/json
 
 {
   "name": "Jim",
+  "number": "010-123456"
+}
+
+###
+PUT {{url}}/639c3ce0acfe0203d4c0435c HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "dd",
   "number": "010-123456"
 }
