@@ -25,7 +25,7 @@ export const addPerson = (person) => {
 
 export const delPerson = (id) => {
   return http.delete(`${baseUrl}/${id}`).then((response) => {
-    const data = JSON.parse(response.data);
+    const data = response.data;
     if (response.status === 200) {
       return data;
     }

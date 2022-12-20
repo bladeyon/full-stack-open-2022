@@ -103,6 +103,7 @@ const App = () => {
       delPerson(person.id)
         .then(() => {
           const data = persons.filter((p) => p.id !== person.id);
+          showErrNotification(`Delete ${person.name} success`, "success");
           reload(data);
         })
         .catch((err) => {
