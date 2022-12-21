@@ -41,9 +41,30 @@ const mostBlogs = (blogs) => {
   return mostBlog;
 };
 
+const mostLikes = (blogs) => {
+  const mostLike = {};
+  const group = _.groupBy(blogs, 'author');
+  const tmpObj = _.mapValues(group, (g) => {
+    console.log('g', g);
+    return g.reduce((sum, item) => sum + item.likes, 0);
+  });
+  console.log('l', tmpObj);
+  const maxCount = Math.max(..._.values(tmpObj));
+  let mostAuth = '';
+  _.forOwn(tmpObj, (value, key) => {
+    if (value === maxCount) {
+      mostAuth = key;
+    }
+  });
+  mostLike.author = mostAuth;
+  mostLike.likes = maxCount;
+  return mostLike;
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 };
