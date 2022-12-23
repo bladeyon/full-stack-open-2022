@@ -12,14 +12,17 @@ blogRouter.get('/:id', (req, res) => {
   });
 });
 
-blogRouter.post('/', (req, res) => {
+blogRouter.post('/', (req, res, next) => {
   const blog = { ...req.body };
 
   const newBlog = new Blog(blog);
 
-  newBlog.save().then((result) => {
-    res.status(201).json(result);
-  });
+  newBlog
+    .save()
+    .then((result) => {
+      res.status(201).json(result);
+    })
+    .catch((err) => next(err));
 });
 
 module.exports = blogRouter;
