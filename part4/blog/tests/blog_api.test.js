@@ -46,8 +46,8 @@ describe('blogs api test', () => {
       .send({
         title: 'hello supertest',
         author: 'Mike',
-        url: 'http://localhost:3002/api/blogs',
-        likes: 290
+        url: 'http://localhost:3002/api/blogs'
+        // likes: 290
       })
       // .set('Accept', 'application/json')
       // .expect('Content-Type', /json/)
