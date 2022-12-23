@@ -11,12 +11,29 @@ const app = require('../app');
 
 const api = supertest(app);
 
-test('get all blogs list', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-}, 10000);
+describe('blogs api test', () => {
+  test('get all blogs list', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  }, 10000);
+
+  test('dose the id exist', async () => {
+    // console.log(expect({ a: 1 }).toHaveProperty('id').toBeDefined());
+    // expect({ a: 1 }).not.toHaveProperty('a');
+    // const res = await api.get('/api/blogs'); // s.expect(200);
+    // const blog = res.body.data;
+    // console.log(res.body.data);
+    // expect(blog[0].id).toBeDefined();
+
+    const res = await api
+      .get('/api/blogs/63a15a5f5d2684a3521ae12e')
+      .expect(200);
+    console.log(res.body);
+    expect(res.body[0].id).toBeDefined();
+  }, 100000);
+});
 
 afterAll(() => {
   mongoose.connection.close();

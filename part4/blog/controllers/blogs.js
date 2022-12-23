@@ -6,6 +6,11 @@ blogRouter.get('/', (req, res) => {
     res.json(result);
   });
 });
+blogRouter.get('/:id', (req, res) => {
+  Blog.find({ _id: req.params.id }).then((result) => {
+    res.json(result);
+  });
+});
 
 blogRouter.post('/', (req, res) => {
   const blog = { ...req.body };
