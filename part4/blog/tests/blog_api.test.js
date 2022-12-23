@@ -33,6 +33,27 @@ describe('blogs api test', () => {
     console.log(res.body);
     expect(res.body[0].id).toBeDefined();
   }, 100000);
+
+  test('send post request to the api of blogs', async () => {
+    const res = await api
+      .post('/api/blogs')
+      // .send(JSON.stringify({
+      //   title: 'hello supertest',
+      //   author: 'Mike',
+      //   url: 'http://localhost:3002/api/blogs',
+      //   likes: 290
+      // }))
+      .send({
+        title: 'hello supertest',
+        author: 'Mike',
+        url: 'http://localhost:3002/api/blogs',
+        likes: 290
+      })
+      // .set('Accept', 'application/json')
+      // .expect('Content-Type', /json/)
+      .expect(201);
+    expect(res.body.id).toBeDefined();
+  }, 100000);
 });
 
 afterAll(() => {
