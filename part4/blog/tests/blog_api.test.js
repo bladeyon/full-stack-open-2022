@@ -45,14 +45,26 @@ describe('blogs api test', () => {
       // }))
       .send({
         title: 'hello supertest',
-        author: 'Mike'
-        // url: 'http://localhost:3002/api/blogs'
+        author: 'Mike',
+        url: 'http://localhost:3002/api/blogs'
         // likes: 290
       })
       // .set('Accept', 'application/json')
       // .expect('Content-Type', /json/)
       .expect(201);
     expect(res.body.id).toBeDefined();
+  }, 100000);
+
+  test('delete a blog by id', async () => {
+    const res = await api.get('/api/blogs');
+    const delBlog = res.body[0];
+    await api.delete(`/api/blogs/${delBlog.id}`).expect(204);
+    // await api.delete('/api/blogs/63a5cd4092265a98e006e13b').expect(204);
+
+    const newBlogs = await api.get('/api/blogs');
+
+    const titles = newBlogs.body.map((b) => b.titles);
+    expect(titles).not.toContain(delBlog.title);
   }, 100000);
 });
 

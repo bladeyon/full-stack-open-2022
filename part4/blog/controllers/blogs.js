@@ -25,4 +25,21 @@ blogRouter.post('/', (req, res, next) => {
     .catch((err) => next(err));
 });
 
+blogRouter.delete('/:id', async (req, res, next) => {
+  try {
+    const blog = await Blog.find({ _id: req.params.id });
+    console.log(blog);
+    // 判断是否存在
+    if (blog.length) {
+      await Blog.deleteOne({ _id: req.params.id });
+      res.status(204).end();
+    } else {
+      console.log(`_id=${req.params.id} does not exist`);
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = blogRouter;
