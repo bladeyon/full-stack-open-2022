@@ -25,6 +25,19 @@ blogRouter.post('/', (req, res, next) => {
     .catch((err) => next(err));
 });
 
+blogRouter.put('/:id', (req, res, next) => {
+  const blog = { ...req.body };
+  const { id } = req.params;
+
+  Blog.findByIdAndUpdate(id, blog, {
+    new: true
+  })
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => next(err));
+});
+
 blogRouter.delete('/:id', async (req, res, next) => {
   try {
     const blog = await Blog.find({ _id: req.params.id });

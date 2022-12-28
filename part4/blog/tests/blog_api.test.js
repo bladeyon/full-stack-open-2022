@@ -66,6 +66,19 @@ describe('blogs api test', () => {
     const titles = newBlogs.body.map((b) => b.titles);
     expect(titles).not.toContain(delBlog.title);
   }, 100000);
+
+  test('modify a blog', async () => {
+    const res = await api.get('/api/blogs');
+    const blog1 = res.body[0];
+    const newTitle = 'hi put1';
+    const modifyRes = await api
+      .put(`/api/blogs/${blog1.id}`)
+      .send({ title: newTitle })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    const newBlog = modifyRes.body;
+    expect(newBlog.title).toBe(newTitle);
+  }, 10000);
 });
 
 afterAll(() => {
