@@ -11,7 +11,7 @@ const app = require('../app');
 
 const api = supertest(app);
 
-describe('blogs api test', () => {
+describe('blogs api tests', () => {
   test('get all blogs list', async () => {
     await api
       .get('/api/blogs')
@@ -78,6 +78,22 @@ describe('blogs api test', () => {
       .expect('Content-Type', /application\/json/);
     const newBlog = modifyRes.body;
     expect(newBlog.title).toBe(newTitle);
+  }, 10000);
+});
+
+describe('user api tests', () => {
+  test('get user list', async () => {
+    const res = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  }, 10000);
+
+  test('create user', async () => {
+    const newUser = { name: 'test', username: 'test2', password: 'test' };
+    const res = await api.post('/api/users').send(newUser).expect(201);
+
+    expect(res.body.username).toBe(newUser.username);
   }, 10000);
 });
 
