@@ -12,15 +12,17 @@ const userSchema = new mongoose.Schema({
   ]
 });
 
-userSchema.set('toJson', (doc, ret) => {
-  const user = { ...ret };
-  user.id = user._id.toString();
-  delete user._id;
-  delete user.__v;
-  delete user.password;
-  return user;
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    const user = { ...ret };
+    user.id = user._id.toString();
+    delete user._id;
+    delete user.__v;
+    delete user.password;
+    return user;
+  }
 });
 
-const User = mongoose.model('users', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

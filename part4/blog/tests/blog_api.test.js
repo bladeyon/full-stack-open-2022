@@ -34,7 +34,7 @@ describe('blogs api tests', () => {
     expect(res.body[0].id).toBeDefined();
   }, 100000);
 
-  test('send post request to the api of blogs', async () => {
+  test('create blog', async () => {
     const res = await api
       .post('/api/blogs')
       // .send(JSON.stringify({
@@ -46,7 +46,8 @@ describe('blogs api tests', () => {
       .send({
         title: 'hello supertest',
         author: 'Mike',
-        url: 'http://localhost:3002/api/blogs'
+        url: 'http://localhost:3002/api/blogs',
+        userId: '63abffedfcf6d540cd979946'
         // likes: 290
       })
       // .set('Accept', 'application/json')
@@ -90,7 +91,7 @@ describe('user api tests', () => {
   }, 10000);
 
   test('create user', async () => {
-    const newUser = { name: 'test', username: 'test2', password: 'test' };
+    const newUser = { name: 'Mike', username: 'Mike', password: 'test' };
     const res = await api.post('/api/users').send(newUser).expect(201);
 
     expect(res.body.username).toBe(newUser.username);
