@@ -1,6 +1,32 @@
 const blogRouter = require('express').Router();
+const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
+
+const getToken = (req) => {
+  const auth = req.get('authorization');
+  if (auth && auth.toLowerCase().startsWith('bearer')) {
+    return auth.slice(7);
+  }
+  return null;
+};
+
+const getUserByToken = async (req, next) => {
+  const token = getToken(req);
+  console.log(token);
+  const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+  console.log(decodedToken);
+  if (!decodedToken.id) {
+    next();
+  }
+  const user = await User.findById(decodedToken.id);
+  console.log(user);
+  if (!user) {
+    // user not found
+    next();
+  }
+  return user;
+};
 
 blogRouter.get('/', async (req, res) => {
   const result = await Blog.find({}).populate('user', {
@@ -9,6 +35,7 @@ blogRouter.get('/', async (req, res) => {
   });
   res.json(result);
 });
+
 blogRouter.get('/:id', (req, res) => {
   Blog.find({ _id: req.params.id }).then((result) => {
     res.json(result);
@@ -36,17 +63,24 @@ blogRouter.post('/', async (req, res, next) => {
   }
 });
 
-blogRouter.put('/:id', (req, res, next) => {
+blogRouter.put('/:id', async (req, res, next) => {
+  const user = await getUserByToken(req, next);
   const blog = { ...req.body };
   const { id } = req.params;
+  try {
+    if (!user.blogs.includes(id)) {
+      return res
+        .status(401)
+        .json({ error: "Can't modify other people's blog" });
+    }
 
-  Blog.findByIdAndUpdate(id, blog, {
-    new: true
-  })
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => next(err));
+    const result = await Blog.findByIdAndUpdate(id, blog, {
+      new: true
+    });
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
 });
 
 blogRouter.delete('/:id', async (req, res, next) => {
