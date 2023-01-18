@@ -22,7 +22,16 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
+const tokenExtractor = (request, response, next) => {
+  const auth = request.get('Authorization');
+  if (auth && auth.toLowerCase().startsWith('bearer')) {
+    request.token = auth.slice(7);
+  }
+  next();
+};
+
 module.exports = {
   requestLogger,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 };

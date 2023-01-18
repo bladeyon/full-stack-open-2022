@@ -3,18 +3,9 @@ const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-const getToken = (req) => {
-  const auth = req.get('authorization');
-  if (auth && auth.toLowerCase().startsWith('bearer')) {
-    return auth.slice(7);
-  }
-  return null;
-};
-
 const getUserByToken = async (req, next) => {
-  const token = getToken(req);
-  console.log(token);
-  const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+  // console.log(req.token);
+  const decodedToken = jwt.verify(req.token, process.env.SECRET_KEY);
   console.log(decodedToken);
   if (!decodedToken.id) {
     next();
