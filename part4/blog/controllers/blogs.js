@@ -4,19 +4,23 @@ const Blog = require('../models/blog');
 const User = require('../models/user');
 
 const getUserByToken = async (req, next) => {
-  // console.log(req.token);
-  const decodedToken = jwt.verify(req.token, process.env.SECRET_KEY);
-  console.log(decodedToken);
-  if (!decodedToken.id) {
-    next();
+  console.log('getUserByToken:', req.token);
+
+  try {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET_KEY);
+    console.log('decodedToken:', decodedToken);
+    if (decodedToken.id) {
+      const user = await User.findById(decodedToken.id);
+      console.log('user by token.id: ', user);
+      if (!user) {
+        throw new jwt.JsonWebTokenError('User does not exist');
+      }
+      return user;
+    }
+    throw new jwt.JsonWebTokenError('decodedToken.id does not exist');
+  } catch (error) {
+    next(error);
   }
-  const user = await User.findById(decodedToken.id);
-  console.log(user);
-  if (!user) {
-    // user not found
-    next();
-  }
-  return user;
 };
 
 blogRouter.get('/', async (req, res) => {
@@ -59,10 +63,9 @@ blogRouter.put('/:id', async (req, res, next) => {
   const blog = { ...req.body };
   const { id } = req.params;
   try {
-    if (!user.blogs.includes(id)) {
-      return res
-        .status(401)
-        .json({ error: "Can't modify other people's blog" });
+    if (user?.blogs && !user?.blogs.includes(id)) {
+      res.status(401).json({ error: "Can't modify other people's blog" });
+      return;
     }
 
     const result = await Blog.findByIdAndUpdate(id, blog, {
@@ -75,15 +78,26 @@ blogRouter.put('/:id', async (req, res, next) => {
 });
 
 blogRouter.delete('/:id', async (req, res, next) => {
+  const user = await getUserByToken(req, next);
+  const { id } = req.params;
+
   try {
-    const blog = await Blog.find({ _id: req.params.id });
+    if (!user.blogs.includes(id)) {
+      res.status(401).json({ error: "Can't delete other people's blog" });
+      return;
+    }
+
+    const blog = await Blog.findById(id);
     console.log(blog);
     // 判断是否存在
-    if (blog.length) {
-      await Blog.deleteOne({ _id: req.params.id });
+    if (blog) {
+      await Blog.deleteOne({ _id: id });
+      // 删除user.blogs中的id
+      user.blogs = user.blogs.filter((b) => b.toString() !== id);
+      await user.save();
       res.status(204).end();
     } else {
-      console.log(`_id=${req.params.id} does not exist`);
+      console.log(`_id=${id} does not exist`);
       next();
     }
   } catch (error) {

@@ -2,7 +2,11 @@ const info = (...params) => {
   console.log(...params);
 };
 const error = (...params) => {
-  console.error(...params);
+  console.error(
+    '%cSystem Error: ',
+    'color: red; font-weight: bolder',
+    ...params
+  );
 };
 
 module.exports = {

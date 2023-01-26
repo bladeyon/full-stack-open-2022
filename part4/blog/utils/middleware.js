@@ -8,15 +8,18 @@ const logger = require('./logger');
 const requestLogger = morgan('tiny');
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.name, error.message);
+  logger.error(error.name, '--->', error.message);
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' });
+    response.status(400).send({ error: 'malformatted id' });
+    return;
   }
   if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message });
+    response.status(400).json({ error: error.message });
+    return;
   }
   if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({ error: 'token missing or invalid' });
+    response.status(401).json({ error: 'token missing or invalid' });
+    return;
   }
 
   next(error);
