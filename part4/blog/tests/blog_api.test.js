@@ -52,8 +52,38 @@ describe('blogs api tests', () => {
       })
       // .set('Accept', 'application/json')
       // .expect('Content-Type', /json/)
+      .set(
+        'Authorization',
+        'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1pa2UiLCJpZCI6IjYzYWJmZmVkZmNmNmQ1NDBjZDk3OTk0NiIsImlhdCI6MTY3NDcxOTczOH0.hU8OVU8-3p2ZgMMPo13XWcCypMfhisg-RXCHORPdgbo'
+      )
       .expect(201);
     expect(res.body.id).toBeDefined();
+  }, 100000);
+
+  test('create blog not token', async () => {
+    const res = await api
+      .post('/api/blogs')
+      // .send(JSON.stringify({
+      //   title: 'hello supertest',
+      //   author: 'Mike',
+      //   url: 'http://localhost:3002/api/blogs',
+      //   likes: 290
+      // }))
+      .send({
+        title: 'hello supertest',
+        author: 'Mike',
+        url: 'http://localhost:3002/api/blogs',
+        userId: '63abffedfcf6d540cd979946'
+        // likes: 290
+      })
+      // .set('Accept', 'application/json')
+      // .expect('Content-Type', /json/)
+      // .set(
+      //   'Authorization',
+      //   'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1pa2UiLCJpZCI6IjYzYWJmZmVkZmNmNmQ1NDBjZDk3OTk0NiIsImlhdCI6MTY3NDcxOTczOH0.hU8OVU8-3p2ZgMMPo13XWcCypMfhisg-RXCHORPdgbo'
+      // )
+      .expect(401);
+    // expect(res.body.id).toBeDefined();
   }, 100000);
 
   test('delete a blog by id', async () => {
