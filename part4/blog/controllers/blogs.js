@@ -40,7 +40,8 @@ blogRouter.get('/:id', (req, res) => {
 blogRouter.post('/', async (req, res, next) => {
   const data = { ...req.body };
 
-  const user = await User.findById(data.userId);
+  // const user = await User.findById(data.userId);
+  const user = req?.user;
 
   const newBlog = new Blog({
     title: data.title,
@@ -59,7 +60,8 @@ blogRouter.post('/', async (req, res, next) => {
 });
 
 blogRouter.put('/:id', async (req, res, next) => {
-  const user = await getUserByToken(req, next);
+  // const user = await getUserByToken(req, next);
+  const user = req?.user;
   const blog = { ...req.body };
   const { id } = req.params;
   try {
@@ -78,7 +80,9 @@ blogRouter.put('/:id', async (req, res, next) => {
 });
 
 blogRouter.delete('/:id', async (req, res, next) => {
-  const user = await getUserByToken(req, next);
+  // const user = await getUserByToken(req, next);
+  const user = req?.user;
+
   const { id } = req.params;
 
   try {
