@@ -3,14 +3,19 @@ import { useState } from 'react';
 const App = () => {
   const [username, setUserName] = useState('');
   const [pwd, setPwd] = useState('');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(localStorage.getItem('user'));
   const [blogData, setBlogData] = useState([{ id: 1, title: 'blog' }]);
 
   const saveLoginInfo = (e) => {
     e.preventDefault();
     setUser(username);
+    localStorage.setItem('user', user);
     setUserName('');
     setPwd('');
+  };
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
   const loginForm = () => (
@@ -41,7 +46,8 @@ const App = () => {
   const blogList = () => (
     <>
       <h2>Blog</h2>
-      <p>{user} logged in</p>
+      <span>{user} logged in</span>
+      <button onClick={handleLogout}>logout</button>
       <div>
         {blogData.length ? (
           <ol>
