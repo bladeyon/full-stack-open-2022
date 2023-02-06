@@ -4,18 +4,36 @@ const App = () => {
   const [username, setUserName] = useState('');
   const [pwd, setPwd] = useState('');
   const [user, setUser] = useState(localStorage.getItem('user'));
-  const [blogData, setBlogData] = useState([{ id: 1, title: 'blog' }]);
+  const [blogData, setBlogData] = useState([]);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const saveLoginInfo = (e) => {
     e.preventDefault();
     setUser(username);
-    localStorage.setItem('user', user);
+    localStorage.setItem('user', username);
     setUserName('');
     setPwd('');
   };
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('user');
+  };
+
+  const handleAddBlog = (e) => {
+    e.preventDefault();
+    const newBlog = {
+      title,
+      url,
+      author
+    };
+    const blogLists = blogData.concat(newBlog);
+
+    setBlogData(blogLists);
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   const loginForm = () => (
@@ -45,9 +63,39 @@ const App = () => {
 
   const blogList = () => (
     <>
-      <h2>Blog</h2>
+      <h2>Blogs</h2>
       <span>{user} logged in</span>
       <button onClick={handleLogout}>logout</button>
+      <div>
+        <h2>create new blog</h2>
+        <form onSubmit={handleAddBlog}>
+          <div>
+            title:
+            <input
+              type="text"
+              value={title}
+              onChange={({ target }) => setTitle(target.value)}
+            />
+          </div>
+          <div>
+            author:
+            <input
+              type="text"
+              value={author}
+              onChange={({ target }) => setAuthor(target.value)}
+            />
+          </div>
+          <div>
+            url:
+            <input
+              type="text"
+              value={url}
+              onChange={({ target }) => setUrl(target.value)}
+            />
+          </div>
+          <button type="submit">create</button>
+        </form>
+      </div>
       <div>
         {blogData.length ? (
           <ol>
