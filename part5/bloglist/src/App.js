@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Notification from './components/Notification';
 
 const App = () => {
   const [username, setUserName] = useState('');
@@ -8,9 +9,15 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const [msg, setMsg] = useState('');
+  const [msgType, setMsgType] = useState('');
 
   const saveLoginInfo = (e) => {
     e.preventDefault();
+    if (!(pwd && username)) {
+      showMsg(`wrong username or password`, 'error');
+      return;
+    }
     setUser(username);
     localStorage.setItem('user', username);
     setUserName('');
@@ -31,11 +38,22 @@ const App = () => {
     const blogLists = blogData.concat(newBlog);
 
     setBlogData(blogLists);
+    showMsg(`a new blog ${title} added`, 'success');
     setTitle('');
     setAuthor('');
     setUrl('');
   };
 
+  const showMsg = (msg, type) => {
+    setMsg(msg);
+    setMsgType(type);
+
+    const msgTimer = setTimeout(() => {
+      clearTimeout(msgTimer);
+      setMsg('');
+      setMsgType('');
+    }, 1500);
+  };
   const loginForm = () => (
     <>
       <h2>Login to App</h2>
@@ -111,9 +129,19 @@ const App = () => {
   );
 
   if (!user) {
-    return <div>{loginForm()}</div>;
+    return (
+      <div>
+        {msg ? <Notification msg={msg} type={msgType} /> : ''}
+        {loginForm()}
+      </div>
+    );
   }
-  return <div>{blogList()}</div>;
+  return (
+    <div>
+      {msg ? <Notification msg={msg} type={msgType} /> : ''}
+      {blogList()}
+    </div>
+  );
 };
 
 export default App;
