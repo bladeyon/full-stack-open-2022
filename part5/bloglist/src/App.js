@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import Notification from './components/Notification';
+import BlogForm from './components/BlogForm';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [username, setUserName] = useState('');
   const [pwd, setPwd] = useState('');
   const [user, setUser] = useState(localStorage.getItem('user'));
   const [blogData, setBlogData] = useState([]);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('');
 
@@ -28,20 +27,11 @@ const App = () => {
     localStorage.removeItem('user');
   };
 
-  const handleAddBlog = (e) => {
-    e.preventDefault();
-    const newBlog = {
-      title,
-      url,
-      author
-    };
+  const createBlog = (newBlog) => {
     const blogLists = blogData.concat(newBlog);
 
     setBlogData(blogLists);
-    showMsg(`a new blog ${title} added`, 'success');
-    setTitle('');
-    setAuthor('');
-    setUrl('');
+    showMsg(`a new blog ${newBlog.title} added`, 'success');
   };
 
   const showMsg = (msg, type) => {
@@ -84,36 +74,7 @@ const App = () => {
       <h2>Blogs</h2>
       <span>{user} logged in</span>
       <button onClick={handleLogout}>logout</button>
-      <div>
-        <h2>create new blog</h2>
-        <form onSubmit={handleAddBlog}>
-          <div>
-            title:
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </div>
-          <div>
-            author:
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </div>
-          <div>
-            url:
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </div>
-          <button type="submit">create</button>
-        </form>
-      </div>
+      <BlogForm createBlog={createBlog} />
       <div>
         {blogData.length ? (
           <ol>
