@@ -30,6 +30,7 @@ const App = () => {
   const queryBlogList = async () => {
     // 获取 bloglist
     const blogList = await getBlogList();
+    blogList.sort((a, b) => b.likes - a.likes);
     setBlogData(blogList);
   };
 
@@ -52,6 +53,7 @@ const App = () => {
     const blog = await putBlog(newBlog);
     const idx = blogData.findIndex((b) => b.id === blog.id);
     blogData.splice(idx, 1, blog);
+    blogData.sort((a, b) => b.likes - a.likes);
     setBlogData(blogData);
     showMsg(`a new blog ${newBlog.title} added`, 'success');
   };
