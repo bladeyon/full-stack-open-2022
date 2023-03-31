@@ -47,6 +47,7 @@ blogRouter.post('/', async (req, res, next) => {
     title: data.title,
     url: data.url,
     likes: data.likes,
+    author: data.author,
     user: user._id
   });
   try {
@@ -70,9 +71,13 @@ blogRouter.put('/:id', async (req, res, next) => {
       return;
     }
 
-    const result = await Blog.findByIdAndUpdate(id, blog, {
-      new: true
-    });
+    const result = await Blog.findByIdAndUpdate(
+      id,
+      { ...blog, user: blog.user.id },
+      {
+        new: true
+      }
+    );
     res.json(result);
   } catch (err) {
     next(err);
