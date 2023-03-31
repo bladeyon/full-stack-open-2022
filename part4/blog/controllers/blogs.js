@@ -77,7 +77,10 @@ blogRouter.put('/:id', async (req, res, next) => {
       {
         new: true
       }
-    );
+    ).populate('user', {
+      username: 1,
+      name: 1
+    });
     res.json(result);
   } catch (err) {
     next(err);

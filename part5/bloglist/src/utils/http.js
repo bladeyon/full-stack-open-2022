@@ -19,7 +19,7 @@ instance.interceptors.request.use((config) => {
       ? `${config.requestOptions?.authenticationScheme} ${token}`
       : token;
   }
-  if (config.method === 'post') {
+  if (['post', 'put'].includes(config.method)) {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
   }
 

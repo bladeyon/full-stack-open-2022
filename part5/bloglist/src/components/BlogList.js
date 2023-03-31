@@ -1,13 +1,13 @@
 import Blog from './Blog';
-const BlogList = ({ list }) => {
+const BlogList = ({ list, onUpdate }) => {
   return (
     <>
       {list?.length ? (
-        <ol>
+        <div>
           {list?.map((blog) => (
-            <Blog key={blog.id} data={blog} />
+            <Blog key={blog.id} data={blog} onUpdate={onUpdate} />
           ))}
-        </ol>
+        </div>
       ) : (
         ''
       )}

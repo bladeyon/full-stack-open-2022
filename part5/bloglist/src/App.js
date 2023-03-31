@@ -4,7 +4,7 @@ import BlogForm from './components/BlogForm';
 import BlogList from './components/BlogList';
 import Login from './components/Login';
 
-import { getBlogList, addBlog } from './services/blog';
+import { getBlogList, addBlog, putBlog } from './services/blog';
 
 const App = () => {
   const [user, setUser] = useState('');
@@ -48,6 +48,14 @@ const App = () => {
     showMsg(`a new blog ${newBlog.title} added`, 'success');
   };
 
+  const updateBlog = async (newBlog) => {
+    const blog = await putBlog(newBlog);
+    const idx = blogData.findIndex((b) => b.id === blog.id);
+    blogData.splice(idx, 1, blog);
+    setBlogData(blogData);
+    showMsg(`a new blog ${newBlog.title} added`, 'success');
+  };
+
   const showMsg = (msg, type) => {
     setMsg(msg);
     setMsgType(type);
@@ -65,7 +73,7 @@ const App = () => {
       {user ? (
         <>
           <BlogForm createBlog={createBlog} />
-          <BlogList list={blogData} />
+          <BlogList list={blogData} onUpdate={updateBlog} />
         </>
       ) : (
         ''

@@ -7,11 +7,6 @@ const Login = ({ cb, msgHandle }) => {
   const [username, setUserName] = useState('');
   const [pwd, setPwd] = useState('');
   const [user, setUser] = useState(userInfos?.username);
-  // useEffect(() => {
-  //   if (user) {
-  //     cb();
-  //   }
-  // }, []);
 
   const handleNameChange = (e) => {
     setUserName(e.target.value);
