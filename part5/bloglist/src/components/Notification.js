@@ -1,5 +1,8 @@
-const Notification = ({ msg, type }) => {
+const Notification = ({ msg, type = 'success' }) => {
   const defStyle = {
+    position: 'fixed',
+    right: '10px',
+    top: '10px',
     color: 'green',
     backgroundColor: 'lightgray',
     fontSize: 16,
@@ -7,11 +10,10 @@ const Notification = ({ msg, type }) => {
     borderStyle: 'solid',
     borderColor: 'green',
     borderRadius: '5px',
-    padding: '10px',
-    marginBottom: '10px'
+    padding: '10px'
   };
 
-  const msgType = {
+  const msgStyle = {
     success: {
       color: 'green',
       borderColor: 'green'
@@ -21,8 +23,9 @@ const Notification = ({ msg, type }) => {
       borderColor: 'red'
     }
   };
-  const style = Object.assign({}, defStyle, msgType[type]);
-  return <div style={style}>{msg}</div>;
+
+  const style = Object.assign({}, defStyle, msgStyle[type]);
+  return <>{msg ? <div style={style}>{msg}</div> : ''}</>;
 };
 
 export default Notification;
