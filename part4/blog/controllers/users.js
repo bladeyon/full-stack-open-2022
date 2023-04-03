@@ -19,10 +19,9 @@ userRouter.post('/', async (req, res, next) => {
     res.status(400).send(`username ${user.username} already exists`);
   }
 
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-
   try {
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
     const result = await user.save();
     res.status(201).json(result);
   } catch (error) {

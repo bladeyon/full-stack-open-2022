@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ data, onUpdate }) => {
+const Blog = ({ data, onUpdate, onRemove }) => {
   const [isShow, setIsShow] = useState(false);
 
   const showDetail = () => {
@@ -9,6 +9,10 @@ const Blog = ({ data, onUpdate }) => {
   const handleLike = async () => {
     const newData = { ...data, likes: data.likes + 1 };
     onUpdate(newData);
+  };
+  const handleRemove = async () => {
+    const newData = { ...data };
+    onRemove(newData);
   };
 
   const detailStyle = {
@@ -39,6 +43,7 @@ const Blog = ({ data, onUpdate }) => {
             likes {data.likes} <button onClick={handleLike}>like</button>
           </div>
           <div>{data.author}</div>
+          <button onClick={handleRemove}>remove</button>
         </dd>
       ) : (
         ''

@@ -1,0 +1,33 @@
+@url= http://localhost:3001/api
+
+### 创建用户
+POST {{url}}/users HTTP/1.1
+Content-Type: application/json;charset=utf-8
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+
+### 用户登录
+post {{url}}/login HTTP/1.1
+Content-Type: application/json;charset=utf-8
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+### 创建blog
+POST {{url}}/blogs HTTP/1.1
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY0MmEzYThmNDIzNzU3NjYzMTFkM2ZhYSIsImlhdCI6MTY4MDQ4OTI1Nn0.P5dO-9Y7Q1YK85ItoldNqADtLtetqquTD-dssgXrztY
+Content-Type: application/json;charset=utf-8
+
+{
+    "title": "data.title",
+    "url": "data.url",
+    "likes": 0,
+    "author": "test",
+    "user": "642a3a8f42375766311d3faa"
+}

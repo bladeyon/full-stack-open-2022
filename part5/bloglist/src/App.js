@@ -4,7 +4,7 @@ import BlogForm from './components/BlogForm';
 import BlogList from './components/BlogList';
 import Login from './components/Login';
 
-import { getBlogList, addBlog, putBlog } from './services/blog';
+import { getBlogList, addBlog, putBlog, delBlog } from './services/blog';
 
 const App = () => {
   const [user, setUser] = useState('');
@@ -58,6 +58,17 @@ const App = () => {
     showMsg(`a new blog ${newBlog.title} added`, 'success');
   };
 
+  const removeBlog = async (blog) => {
+    const res = window.confirm(`Remove blog ${blog.title}`);
+    if (res) {
+      const ret = await delBlog(blog.id);
+      const idx = blogData.findIndex((b) => b.id === blog.id);
+      blogData.splice(idx, 1);
+      setBlogData(blogData);
+      showMsg(`blog ${blog.title} removed`, 'success');
+    }
+  };
+
   const showMsg = (msg, type) => {
     setMsg(msg);
     setMsgType(type);
@@ -75,7 +86,11 @@ const App = () => {
       {user ? (
         <>
           <BlogForm createBlog={createBlog} />
-          <BlogList list={blogData} onUpdate={updateBlog} />
+          <BlogList
+            list={blogData}
+            onUpdate={updateBlog}
+            onRemove={removeBlog}
+          />
         </>
       ) : (
         ''
