@@ -61,7 +61,7 @@ const App = () => {
   const removeBlog = async (blog) => {
     const res = window.confirm(`Remove blog ${blog.title}`);
     if (res) {
-      const ret = await delBlog(blog.id);
+      await delBlog(blog.id);
       const idx = blogData.findIndex((b) => b.id === blog.id);
       blogData.splice(idx, 1);
       setBlogData(blogData);

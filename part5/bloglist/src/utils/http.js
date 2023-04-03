@@ -36,7 +36,7 @@ instance.interceptors.response.use(
     }
   },
   (error) => {
-    const { response, code, message, config } = error || {};
+    const { response, message } = error || {};
     const errMsg = response?.data?.error ?? message;
     alert(errMsg);
     return Promise.reject(errMsg);

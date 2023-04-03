@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { login } from '../services/login';
 
 const Login = ({ cb, msgHandle }) => {
@@ -19,7 +19,7 @@ const Login = ({ cb, msgHandle }) => {
   const saveLoginInfo = async (e) => {
     e.preventDefault();
     if (!(pwd && username)) {
-      msgHandle(`wrong username or password`, 'error');
+      msgHandle('wrong username or password', 'error');
       return;
     }
     try {
