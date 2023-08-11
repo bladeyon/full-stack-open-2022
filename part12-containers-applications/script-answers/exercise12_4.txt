@@ -1,0 +1,11 @@
+# 查看 docker 容器
+docker container ls -a
+
+# 启动容器
+docker start -i [container_name]
+
+# 安装 nodejs
+apt install -y nodejs
+
+# 执行js
+node /usr/src/app/index.js
